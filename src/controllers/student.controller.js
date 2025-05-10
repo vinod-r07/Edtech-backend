@@ -49,15 +49,14 @@ const updateDetails= asyncHandler(
         if( !studentId )
             throw new ApiError(400, "Something went wrong !!");
 
-        await Student.findByIdAndUpdate({
-            studentId,
-            {
-               $set: [{fullName}, {bio}, {college}, {dp}, {branch}, {passingYear}]  
-            },
-            {
-                new: true
-            }
-        })
+        // await Student.findByIdAndUpdate({ studentId,
+        //     {
+        //        $set: [{fullName}, {bio}, {college}, {dp}, {branch}, {passingYear}]  
+        //     },
+        //     {
+        //         new: true
+        //     }
+        // })
 
         const student= req.student;
         student.dp= dp;

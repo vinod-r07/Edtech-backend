@@ -4,25 +4,13 @@ import cookieParser from "cookie-parser";
 
 const app= express();
 
-const allowedOrigin= [
-    `https://localhost:${process.env.PORT}`
-]
+
 
 // CORS
-app.use( cors(
-    {
-        origin: function(origin, callback) {
-            if( !origin) return callback(null, true);
-            if( allowedOrigin.includes(origin) )  {
-                return callback( null, true);
-            } 
-            else{
-                throw new error("CORS policy violation: Origin not allowed")
-            }
-        },
-        credentials: true
-    }
-) )
+app.use(cors({
+    origin: 'http://localhost:5173', // frontend origin
+    credentials: true
+  }));
 
   
 app.use( express.json());
@@ -36,11 +24,16 @@ import adminRouter from "./routes/admin.router.js";
 import courseRouter from './routes/course.router.js';
 import instructorRouter from "./routes/instructor.router.js";
 import authRouter from "./routes/auth.router.js";
+import categoryRouter from './routes/category.router.js';
+import userRouter from "./routes/user.router.js"
 
 // routing
 app.use("/api/v1/student", studentRouter);
-  
-
-
+app.use("/api/v1/cat", categoryRouter);
+app.use("/api/v1/auth", authRouter); 
+app.use('/api/v1/admin', adminRouter);
+app.use('/api/v1/instructor', instructorRouter);
+app.use('/api/v1/course', courseRouter);
+app.use('/api/v1/user', userRouter);
 
 export {app}

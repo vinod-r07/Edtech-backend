@@ -1,8 +1,7 @@
 import mongoose, {Schema} from "mongoose";
 import bcrypt, { genSalt } from "bcrypt";
-import { ApiError } from "../utils/ApiError";
+import { ApiError } from "../utils/ApiError.js";
 import jwt from 'jsonwebtoken';
-
 
 const instructorSchema= new Schema({
     email: {
@@ -31,7 +30,7 @@ const instructorSchema= new Schema({
     refreshToken: {
         type: String,
     },
-    profilePic: {
+    dp: {
         type: String,
     },
     bio: {
@@ -46,17 +45,16 @@ const instructorSchema= new Schema({
             ref: "Course"
         }
     ],
-    Education: [
-        {
-            college: {
-                type: String,
-            },
-            Branch: {
-                type: String,
-            }
-        }
-    ],
+    college: {
+        type: String,
+    },
+    branch: {
+            type: String,
+    },
     refreshToken: {
+        type: String
+    },
+    passingYear: {
         type: String
     }
     
@@ -67,21 +65,21 @@ const instructorSchema= new Schema({
 )
 
 
-Instructor.pre("save", async function(next) {
-    if( !this.isModified("password"))
+instructorSchema.pre("save", async function(next) {
+      if( !this.isModified("password") )
+            return next();
+    
+        const salt= await genSalt(10);
+        this.password= await bcrypt.hash(this.password, salt);
         return next();
-
-    const salt= await genSalt(10);
-    this.password=  bcrypt.hash(this.password, salt);
-
-    return next();
 })
 
-Instructor.methods.isPasswordCorrect= async function(password)  {
+instructorSchema.methods.isPasswordCorrect= async function(password)  {
     return await bcrypt.compare( this.password, password)
 }
 
-Instructor.methods.generateRefreshToken= function() {
+
+instructorSchema.methods.generateAccessToken= function() {
     return jwt.sign(
         {
             id: this._id,
@@ -96,12 +94,12 @@ Instructor.methods.generateRefreshToken= function() {
     )
 }
 
-Instructor.methods.generateAccessToken= function( instructor) {
+instructorSchema.methods.generateRefreshToken= function() {
     return jwt.sign(
         {
-            id: instructor._id,
+            id: this._id,
         },
-        process.env.process.env.REFRESH_TOKEN_SECRET,
+        process.env.REFRESH_TOKEN_SECRET,
         {
             expiresIn: process.env.REFRESH_TOKEN_EXPIRY
         }

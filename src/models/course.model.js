@@ -7,10 +7,6 @@ const courseSchema= new Schema(
             required: true,
             unique: true
         },
-        catalog: {
-            type: String,
-            required: true,
-        },
         image: {
             type: String,
             required: true,
@@ -19,67 +15,37 @@ const courseSchema= new Schema(
             type: Number,
             required: true
         },
-        discout: {
-            type: Number
-        },
-        discount_expires_in: {
-            type: Date,
-        },
-        description: [
-            {
-                type: String
-            }
-        ],
-        details: {
-            type: String,
-            required: true,
-        },
-        subject: {
-            type: String
-        },
-        what_will_you_learn: [
-            {
+        description: {
                 type: String,
-            }
-        ],
-        content: {
-            type: Schema.Types.ObjectId,
-            ref: "Lecture"
+                required: true
         },
+        what_will_you_learn: [ String],
+        content: [{
+            type: Schema.Types.ObjectId,
+            ref: "Section"
+        }],
         rating: {
             Type: Number,
         },
         userRating: [
             {
-                userName: {
-                    type: String
-                },
-                userDp: {
-                    type: String
-                },
-                rating: {
-                    type: Number
-                },
-                message: {
-                    Type: String
-                }
+                type: Schema.Types.ObjectId,
+                ref: "UserReview"
             }
         ],
-        benefits: [
-            {
-                type: String
-            }
-        ],
+        benefits: [String],
         coupon: {
             type: String
         },
         students: [
             {
-                type: String
+                type: Schema.Types.ObjectId,
+                ref: "Student",
             }
         ],
+        requirements: [String],
         instructor: {
-            type: Schema.Type.ObjectId,
+            type: Schema.Types.ObjectId,
             ref: "Instructor"
         }
 
